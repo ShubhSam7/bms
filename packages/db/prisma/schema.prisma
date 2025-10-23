@@ -1,17 +1,20 @@
 generator client {
   provider = "prisma-client-js"
+  // Keep client output in repo so packages can import from ../generated/prisma
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider  = "postgresql"
+  // App runtime uses pooled connection via DATABASE_URL (6543 + pgbouncer=true)
   url       = env("DATABASE_URL")
+  // Prisma migrate/studio should connect directly to Postgres (5432)
   directUrl = env("DIRECT_URL")
 }
 
-
 model User {
-  id       String @id @default(uuid())
-  username String @unique
-  password String
+  id        String   @id @default(uuid())
+  username  String
+  password  String
+  createdAt DateTime @default(now())
 }

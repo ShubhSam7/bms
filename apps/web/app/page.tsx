@@ -1,11 +1,15 @@
 import { client } from "@repo/db/client";
 
 export default async function Home(){
-      const user = await client.user.findFirst();
+      const user = await client.user.findFirst({
+        where: {
+          username: "webtest"
+        }
+      });
       return (
       <div>
         <div>hi there</div>
-        {user?.username}
+        {user?.username}" "
         {user?.password}
       </div>
       )
