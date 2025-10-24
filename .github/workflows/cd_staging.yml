@@ -11,22 +11,19 @@ jobs:
         steps:
             - name: SSH into Server and Deploy
               run: |
-                # Setup SSH key
                 echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
                 chmod 600 ~/ssh_key
                 
-                # Setup known_hosts
-                mkdir -p ~/.ssh
-                echo "${{ secrets.KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-                chmod 644 ~/.ssh/known_hosts
-                
-                # SSH and run commands on remote server
                 ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@16.16.126.130 << 'EOF'
-                  cd ~/bms/
-                  git pull origin main
-                  pnpm install
-                  pnpm run build
-                  pm2 restart http-server
-                  pm2 restart web
-                  pm2 restart ws-server
+                export PATH=$HOME/.local/share/pnpm:$PATH
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                
+                cd ~/bms/
+                git pull origin main
+                pnpm install
+                pnpm run build
+                pm2 restart http-server
+                pm2 restart web
+                pm2 restart ws-server
                 EOF
